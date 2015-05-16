@@ -7,7 +7,7 @@ public class Checker {
 		System.out.println(Utils.getBigramCount("The day"));
 		System.out.println(Utils.getUnigramCount("amazing"));
 		System.out.println(Utils.getUnigramCount("day"));
-		System.out.println(Utils.get)
+		System.out.println(Utils.isValidWord("super"));
 	}
 
 }

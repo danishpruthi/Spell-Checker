@@ -31,8 +31,8 @@ public class Utils {
 	private static void populateWordList()
 	{
 		try {
-			for (String line : Files.readAllLines(Paths.get(Constants.UNIGRAM_FILE))) {
-				wordlist.put(line,true);
+			for (String line : Files.readAllLines(Paths.get(Constants.WORDS_FILE))) {
+				wordlist.put(line.toLowerCase(),true);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -68,7 +68,14 @@ public class Utils {
 		}
 		
 	}
-	//public static Boolean isValidWord
+	
+	public static Boolean isValidWord(String word){
+		word = word.toLowerCase();
+		if(wordlist.containsKey(word)){
+			return true;
+		}
+		return false;
+	}
 	public static long getUnigramCount(String unigram) {
 		if (unigram_count.containsKey(unigram)) {
 			return (long)unigram_count.get(unigram);
