@@ -13,17 +13,31 @@ public class Utils {
 	
 	// key = bigram, case sensitive; value = bigram count
 	static Map<String, Long> bigram_count = new HashMap<String, Long>();
+	
+	static Map<String,Boolean> wordlist = new HashMap<String,Boolean>();
 
 	
 	public static List<String> getPossibleCandidates(String s) {
+		// Edit Distance 1 and 2
 		return new ArrayList<String>();
 	}
 	
 	public static void loadModule() {
+		populateWordList();
 		populateUnigrams();
 		populateBigrams();
+		
 	}
-	
+	private static void populateWordList()
+	{
+		try {
+			for (String line : Files.readAllLines(Paths.get(Constants.UNIGRAM_FILE))) {
+				wordlist.put(line,true);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	private static void populateUnigrams() {
 		try {
 			for (String line : Files.readAllLines(Paths.get(Constants.UNIGRAM_FILE))) {
@@ -54,7 +68,7 @@ public class Utils {
 		}
 		
 	}
-	
+	//public static Boolean isValidWord
 	public static long getUnigramCount(String unigram) {
 		if (unigram_count.containsKey(unigram)) {
 			return (long)unigram_count.get(unigram);
