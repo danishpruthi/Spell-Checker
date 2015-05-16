@@ -14,11 +14,13 @@ public class Utils {
 	// key = bigram, case sensitive; value = bigram count
 	static Map<String, Long> bigram_count = new HashMap<String, Long>();
 	
+	// key : word, not case sensitive; value = true (always)
 	static Map<String,Boolean> wordlist = new HashMap<String,Boolean>();
 
 	
 	public static List<String> getPossibleCandidates(String s) {
 		// Edit Distance 1 and 2
+		
 		return new ArrayList<String>();
 	}
 	
