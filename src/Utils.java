@@ -6,9 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-
-
+//good to go
 public class Utils {
 	// key = word, case sensitive; value = unigram count
 	static Map<String, Long> unigram_count = new HashMap<String, Long>();
