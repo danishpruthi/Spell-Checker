@@ -25,7 +25,7 @@ public class Utils {
 	// key : word, case sensitive; value = number of unique words that can follow it
 	static Map<String, Long> first_word_count = new HashMap<String, Long>();
 	
-	
+	static ArrayList<String> words = new ArrayList<String>();
 
 	static long total_bigrams = 0;
 	static long total_unigrams = 0;
@@ -33,9 +33,25 @@ public class Utils {
 	// experimental value... usually taken 0.5 or 0.75
 	static double discount = 0.75;
 	
+	private static Boolean Is1EditDistance(String s, String s2){
+		for (int j = 0; j < s.length() && j < s2.length(); j++){
+            if (s.charAt(j) != s2.charAt(j)){
+                return s.substring(j + 1).equals(s2.substring(j + 1))    
+                    || s.substring(j + 1).equals(s2.substring(j))     
+                    || s.substring(j).equals(s2.substring(j + 1)) ;      
+            }
+        }
+        return Math.abs(s.length() - s2.length()) == 1;
+	}
 	public static List<String> getPossibleCandidates(String s) {
-		// Edit Distance 1 and 2
-		return new ArrayList<String>();
+		// Edit Distance 1
+		ArrayList<String> candidates = new ArrayList<String>();
+		for(int i =0;i<words.size();i++){
+			if(Is1EditDistance(s, words.get(i))){
+				candidates.add(words.get(i));
+			}			
+		}
+		return candidates;
 	}
 	
 	public static void loadModule() {
@@ -49,6 +65,7 @@ public class Utils {
 		try {
 			for (String line : Files.readAllLines(Paths.get(Constants.WORDS_FILE))) {
 				word_list.put(line.toLowerCase(),true);
+				words.add(line.toLowerCase());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
