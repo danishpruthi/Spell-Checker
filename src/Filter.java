@@ -10,15 +10,24 @@ public class Filter {
 		FileWriter fw = new FileWriter("out.txt");
 		String finalString = "";
 		try {
+			
 			for (String line : Files.readAllLines(Paths.get(Constants.TEST_FILE))) {
-				String delimiter = "\t ;,:'";
+				String delimiter = "\t ;,:'.\n";
 				
 				StringTokenizer tokenizer = new StringTokenizer(line, delimiter);
 				String prev = "<S>";
 				
 				while (tokenizer.hasMoreTokens()) {
 					String curr = tokenizer.nextToken();
-					if (Utils.isValidWord(curr)) {
+					Boolean flag = false;
+					if (curr.length() >= 2) {
+						if (curr.charAt(0) >= 'A' && curr.charAt(0) <= 'Z') {
+							if (curr.charAt(1) >= 'a' && curr.charAt(1)<= 'z') {
+								flag = true;
+							}
+						}
+					}
+					if (Utils.isValidWord(curr) || flag)  {
 						prev = curr;
 						finalString += curr + " ";
 						continue;
@@ -26,6 +35,9 @@ public class Filter {
 					List<String> candidates = Utils.getPossibleCandidates(curr);
 					double maxScore = -1;
 					String desiredCandidate = "";
+					if (candidates.isEmpty()) {
+						desiredCandidate = curr;
+					}
 					for (String candidate :  candidates) {
 						if (desiredCandidate == "") {
 							desiredCandidate = candidate;
@@ -40,7 +52,7 @@ public class Filter {
 						
 					}
 					finalString += desiredCandidate + " ";
-					prev = curr;
+					prev = desiredCandidate;
 				}
 				
 				
