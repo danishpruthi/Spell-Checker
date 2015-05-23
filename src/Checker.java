@@ -1,7 +1,9 @@
+import java.io.IOException;
+
 
 public class Checker {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		Utils.loadModule();
 		System.out.println(Utils.getBigramCount("The day"));
 		System.out.println(Utils.getUnigramCount("amazing"));
@@ -15,6 +17,7 @@ public class Checker {
 		System.out.println(Utils.getTotalScore("me", "believe"));
 		// for the query "believe mine"
 		System.out.println(Utils.getTotalScore("mine", "believe"));
+		Filter.BasicFilter();
 	}
 
 }
