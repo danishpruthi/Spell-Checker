@@ -1,0 +1,6 @@
+// This is the file which contains words that need to be ignored. 
+// Each word to be ignored should be a part of a separate new line
+// You can add comments like this, with '//' in front of the line.
+// NOTE: this file is case sensitive 
+ignore
+shouldbeignored

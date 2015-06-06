@@ -3,8 +3,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 //good to go
 public class Utils {
@@ -24,6 +26,10 @@ public class Utils {
 	static Map<String, Long> first_word_count = new HashMap<String, Long>();
 	
 	static ArrayList<String> words = new ArrayList<String>();
+	
+	static Map<String, String> short_hand_crrections = new HashMap<String, String>();
+	
+	static Set<String> ignore_words = new HashSet<String>();
 
 	static long total_bigrams = 0;
 	static long total_unigrams = 0;
@@ -56,6 +62,8 @@ public class Utils {
 		populateWordList();
 		populateUnigrams();
 		populateBigrams();
+		populateIgnoreWords();
+		printIgnoreWords();
 		
 	}
 	private static void populateWordList()
@@ -186,5 +194,36 @@ public class Utils {
 		}
 		
 		return 0.0;
+	}
+	
+	private static void populateIgnoreWords() {
+		try {
+			for (String line : Files.readAllLines(Paths.get(Constants.IGNORE_FILE))) {
+				line = line.trim();
+				if (line.length() >= 2) {
+					if (line.substring(0, 2).compareTo("//") == 0) {
+						continue;
+					} else {
+						ignore_words.add(line);
+					}
+				}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	// used for only testing, else obsolete
+	private static void printIgnoreWords() {
+		
+		Object[] list = ignore_words.toArray();
+		for (int i = 0; i < list.length; i++) {
+			System.out.println(list[i]);
+		}		
+	}
+	
+	public static boolean isIgnoreWord(String s) {
+		return ignore_words.contains(s);
 	}
 }

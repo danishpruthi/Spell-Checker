@@ -21,6 +21,17 @@ public class Checker {
 //		// for the query "believe mine"
 //		System.out.println(Utils.getTotalScore("mine", "believe"));
 		
+
+
+		// candidate, previous word
+		// for the query "believe my"
+		System.out.println(Utils.getTotalScore("my", "believe"));
+		// for the query "believe me"
+		System.out.println(Utils.getTotalScore("me", "believe"));
+		// for the query "believe mine"
+		System.out.println(Utils.getTotalScore("mine", "believe"));
+		Filter.BasicFilter();
+
 	}
 
 }

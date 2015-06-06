@@ -25,8 +25,8 @@ public class Filter {
 							}
 						}
 					}
-					//If valid work, ignore the word
-					if (Utils.isValidWord(curr) || flag)  {
+					//If valid work or ignore word, ignore the word
+					if (Utils.isValidWord(curr) || flag || Utils.isIgnoreWord(curr))  {
 						prev = curr;
 						finalString += curr;
 						continue;
