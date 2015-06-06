@@ -31,7 +31,9 @@ public class Utils {
 	
 	static Set<String> ignore_words = new HashSet<String>();
 	
-
+	// key: incorrect word; value = list of possible corrections
+	static Map<String, List<String> > corrections = new HashMap<String, List<String> >();
+	
 	static long total_bigrams = 0;
 	static long total_unigrams = 0;
 	
@@ -136,9 +138,12 @@ public class Utils {
 		populateUnigrams();
 		populateBigrams();
 		populateIgnoreWords();
-		//printIgnoreWords();
-		
+
+		populateCommonMistakes();
+		printMistakes();
+
 	}
+	
 	private static void populateWordList()
 	{
 		try {
@@ -298,4 +303,52 @@ public class Utils {
 	public static boolean isIgnoreWord(String s) {
 		return ignore_words.contains(s);
 	}
+	
+	// to populate common mistakes
+	private static void populateCommonMistakes() {
+		try {
+			for (String line : Files.readAllLines(Paths.get(Constants.CORRECTION_FILE))) {
+				line = line.trim();
+				String[] split_line = line.split(":");
+				if (split_line.length != 2) {
+					continue;
+				} 
+				
+				String correct = split_line[0].trim();
+				String[] mistakes = split_line[1].split(",");
+				for (String mistake: mistakes) {
+					mistake = mistake.trim();
+					if (corrections.containsKey(mistake)) {
+						corrections.get(mistake).add(correct);
+					} else {
+						List<String> start_list = new ArrayList<String>();
+						start_list.add(correct);
+						corrections.put(mistake, start_list);
+					}
+				}
+				
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	// only for testing
+	private static void printMistakes() {
+		System.out.println(corrections.size());
+		List<String> l = corrections.get("bout");
+		for (String element: l) {
+			System.out.println(element);
+		}
+	}
+	
+	public static boolean isCommonMistake(String s) {
+		return corrections.containsKey(s);
+	}
+	
+	public static List<String> getSuggestions(String s) {
+		return corrections.get(s);
+	}
+	
 }

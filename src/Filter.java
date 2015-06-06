@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -25,7 +26,7 @@ public class Filter {
 							}
 						}
 					}
-					//If valid work or ignore word, ignore the word
+					//If valid work or ignore-word, ignore the word
 					if (Utils.isValidWord(curr) || flag || Utils.isIgnoreWord(curr))  {
 						prev = curr;
 						finalString += curr;
@@ -49,8 +50,16 @@ public class Filter {
 					}
 					//Control reaches here if word is wrong. We do edit distance,
 					//and bigram count to get best match.
-					List<String> candidates = Utils.getProperED1Candidates(curr);					
-					candidates.addAll(Utils.getProperED2Candidates(curr));
+
+					List<String> candidates = new ArrayList<String>();
+					
+					if (Utils.isCommonMistake(curr)) {
+						candidates = Utils.getSuggestions(curr);
+					} else {
+						candidates = Utils.getProperED1Candidates(curr);					
+						candidates.addAll(Utils.getProperED2Candidates(curr));
+					}
+					
 					double maxScore = -1;
 					String desiredCandidate = "";
 					if (candidates.isEmpty()) {

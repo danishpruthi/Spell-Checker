@@ -6,5 +6,5 @@ public class Constants {
 	static String WORDS_FILE = "/Users/danish/Documents/Spell Checker/Checker/data/words.txt";
 	static String TEST_FILE = "/Users/danish/Documents/Spell Checker/Checker/data/sample_test.txt";
 	static String IGNORE_FILE = "/Users/danish/Documents/Spell Checker/Checker/data/ignore.txt";
-
+	static String CORRECTION_FILE = "/Users/danish/Documents/Spell Checker/Checker/data/corrections.txt";
 }
