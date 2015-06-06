@@ -49,7 +49,8 @@ public class Filter {
 					}
 					//Control reaches here if word is wrong. We do edit distance,
 					//and bigram count to get best match.
-					List<String> candidates = Utils.getPossibleCandidates(curr);
+					List<String> candidates = Utils.getProperED1Candidates(curr);					
+					candidates.addAll(Utils.getProperED2Candidates(curr));
 					double maxScore = -1;
 					String desiredCandidate = "";
 					if (candidates.isEmpty()) {
