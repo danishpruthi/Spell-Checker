@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 //good to go
 public class Utils {
@@ -26,10 +27,10 @@ public class Utils {
 	static Map<String, Long> first_word_count = new HashMap<String, Long>();
 	
 	static ArrayList<String> words = new ArrayList<String>();
-	
 	static Map<String, String> short_hand_crrections = new HashMap<String, String>();
 	
 	static Set<String> ignore_words = new HashSet<String>();
+	
 
 	static long total_bigrams = 0;
 	static long total_unigrams = 0;
@@ -37,33 +38,105 @@ public class Utils {
 	// experimental value... usually taken 0.5 or 0.75
 	static double discount = 0.75;
 	
-	private static Boolean Is1EditDistance(String s, String s2){
-		for (int j = 0; j < s.length() && j < s2.length(); j++){
-            if (s.charAt(j) != s2.charAt(j)){
-                return s.substring(j + 1).equals(s2.substring(j + 1))    
-                    || s.substring(j + 1).equals(s2.substring(j))     
-                    || s.substring(j).equals(s2.substring(j + 1)) ;      
-            }
-        }
-        return Math.abs(s.length() - s2.length()) == 1;
-	}
-	public static List<String> getPossibleCandidates(String s) {
-		// Edit Distance 1
-		ArrayList<String> candidates = new ArrayList<String>();
-		for(int i =0;i<words.size();i++){
-			if(Is1EditDistance(s, words.get(i))){
-				candidates.add(words.get(i));
-			}			
+//	private static Boolean Is1EditDistance(String s, String s2){
+//		for (int j = 0; j < s.length() && j < s2.length(); j++){
+//            if (s.charAt(j) != s2.charAt(j)){
+//                return s.substring(j + 1).equals(s2.substring(j + 1))    
+//                    || s.substring(j + 1).equals(s2.substring(j))     
+//                    || s.substring(j).equals(s2.substring(j + 1)) ;      
+//            }
+//        }
+//        return Math.abs(s.length() - s2.length()) == 1;
+//	}
+	//Gets all possible ED1 words including non dictionary words
+	public static List<String> getPossibleED1Candidates(String s){
+		if(s.length() == 0)
+			return null;
+		List<String> candidates = new ArrayList<>();
+		String copy = s;
+		//Inserting character
+		for(int i = 0;i <=s.length();i++){
+			for(int j = 0;j<26;j++){
+				copy = copy.substring(0, i) + Character.toChars(j+97)[0] + copy.substring(i, copy.length());
+				candidates.add(copy);
+				copy = s;
+			}
+		}
+		//Replacing character
+		StringBuilder str = new StringBuilder(s);
+		for(int i = 0;i <s.length();i++){
+			for(int j = 0;j<26;j++){
+				str.setCharAt(i, Character.toChars(j+97)[0]);
+				candidates.add(str.toString());
+				str.setCharAt(i, s.charAt(i));
+			}
+		}
+		// No point deleting single letter words
+		if(s.length() == 1)
+			return candidates;
+		//Deleting character
+		for(int i = 0;i<s.length();i++)
+		{
+			StringBuilder temp = new StringBuilder(s);
+			temp.deleteCharAt(i);
+			candidates.add(temp.toString());
 		}
 		return candidates;
+	}	
+	
+	//Gets all possible ED2 words including non dictionary words
+	public static Set<String> getPossibleED2Candidates(String s){
+		List<String> ED1 = getPossibleED1Candidates(s);
+		//List<String> candidates = new ArrayList<String>();
+		Set<String> candidates = new TreeSet<String>();
+		for(String item : ED1){
+			List<String> temp = getPossibleED1Candidates(item);
+			candidates.addAll(temp);
+		}
+		return candidates;
+		
 	}
+	
+	//Gets ED1 with proper words only
+	public static List<String> getProperED1Candidates(String s){
+		List<String> allCandidates = getPossibleED1Candidates(s);
+		List<String> properCandidates = new ArrayList<String>();
+		for(String item : allCandidates){
+			Boolean isWord = word_list.containsKey(item);
+			if(isWord)
+				properCandidates.add(item);				
+		}
+		return properCandidates;
+	}
+	
+	//Gets ED2 with proper words only
+	public static List<String> getProperED2Candidates(String s){
+		Set<String> allCandidates = getPossibleED2Candidates(s);
+		List<String> properCandidates = new ArrayList<String>();
+		for(String item : allCandidates){
+			Boolean isWord = word_list.containsKey(item);
+			if(isWord)
+				properCandidates.add(item);				
+		}
+		return properCandidates;
+	}
+//	public static List<String> getPossibleCandidates(String s) {
+//		// Edit Distance 1
+//		ArrayList<String> candidates = new ArrayList<String>();
+//		for(int i =0;i<words.size();i++){
+//			if(Is1EditDistance(s, words.get(i))){
+//				candidates.add(words.get(i));
+//			}			
+//		}
+//		return candidates;
+//	}
 	
 	public static void loadModule() {
 		populateWordList();
 		populateUnigrams();
 		populateBigrams();
 		populateIgnoreWords();
-		printIgnoreWords();
+		//printIgnoreWords();
 		
 	}
 	private static void populateWordList()
@@ -195,7 +268,6 @@ public class Utils {
 		
 		return 0.0;
 	}
-	
 	private static void populateIgnoreWords() {
 		try {
 			for (String line : Files.readAllLines(Paths.get(Constants.IGNORE_FILE))) {
